@@ -1,0 +1,21 @@
+
+## ATTACHMENT ##
+id , filename , filetype , filesize(in bytes)
+
+## Attachment Service ## --> Interface
+3 methods --> saveAttachment , getAttachment , searchAttachment
+this is getting implemented in # AttachmentServiceImpl #
+
+## Response Data ##
+filename , filetype , dwnloadurl , filesize
+
+## attachment repository ##
+--> just extending jpa repository
+
+## Attachment Controller ##
+--> 3 things --> upload , download , search functions and mappings
+
+## Model ##
+
+
+## SpringBootFileUploadApplication ##

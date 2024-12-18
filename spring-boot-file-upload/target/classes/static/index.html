@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input, button, select {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .file-item a {
+            color: #1E90FF;
+            text-decoration: none;
+        }
+
+        .file-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>File Management System</h1>
+<div class="container">
+    <!-- Upload File -->
+    <h2>Upload a File</h2>
+    <input type="file" id="fileInput" />
+    <button onclick="uploadFile()">Upload</button>
+
+    <!-- Search Files -->
+    <h2>Search Files</h2>
+    <input type="text" id="searchQuery" placeholder="Enter file name..." />
+    <button onclick="searchFiles()">Search</button>
+
+    <!-- Filter Files -->
+    <h2>Filter Files by Type</h2>
+    <select id="fileType">
+        <option value="pdf">PDF</option>
+        <option value="doc">Documents</option>
+        <option value="image">Images</option>
+        <option value="other">Other</option>
+    </select>
+    <button onclick="filterFiles()">Filter</button>
+
+    <!-- Show All Files -->
+    <h2>All Files</h2>
+    <button onclick="showAllFiles()">Show All Files</button>
+
+    <!-- File List -->
+    <div class="file-list" id="fileList"></div>
+</div>
+
+<script>
+    const baseUrl = window.location.origin;
+
+    // Function to upload a file
+    async function uploadFile() {
+        const fileInput = document.getElementById("fileInput");
+        if (!fileInput.files[0]) {
+            alert("Please select a file to upload.");
+            return;
+        }
+        const formData = new FormData();
+        formData.append("file", fileInput.files[0]);
+
+        try {
+            const response = await fetch(`${baseUrl}/upload`, {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            alert(`File uploaded successfully: ${result.fileName}`);
+            showAllFiles(); // Refresh file list
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            alert("Error uploading file.");
+        }
+    }
+
+    // Function to search files
+    async function searchFiles() {
+        const query = document.getElementById("searchQuery").value;
+
+        try {
+            const response = await fetch(`${baseUrl}/search?query=${query}`);
+            const files = await response.json();
+            displayFiles(files);
+        } catch (error) {
+            console.error("Error searching files:", error);
+            alert("Error searching files.");
+        }
+    }
+
+    // Function to filter files by type
+    async function filterFiles() {
+        const type = document.getElementById("fileType").value;
+
+        try {
+            const response = await fetch(`${baseUrl}/filter?type=${type}`);
+            const files = await response.json();
+            displayFiles(files);
+        } catch (error) {
+            console.error("Error filtering files:", error);
+            alert("Error filtering files.");
+        }
+    }
+
+    // Function to display all files
+    async function showAllFiles() {
+        try {
+            const response = await fetch(`${baseUrl}/files`);
+            const files = await response.json();
+            displayFiles(files);
+        } catch (error) {
+            console.error("Error fetching all files:", error);
+            alert("Error fetching all files.");
+        }
+    }
+
+    // Function to display files in the file list
+    function displayFiles(files) {
+        const fileList = document.getElementById("fileList");
+        fileList.innerHTML = "";
+
+        if (files.length === 0) {
+            fileList.innerHTML = "<p>No files found.</p>";
+            return;
+        }
+
+        files.forEach(file => {
+            const fileItem = document.createElement("div");
+            fileItem.className = "file-item";
+
+            fileItem.innerHTML = `
+                <span>${file.fileName} (${file.fileType}, ${formatFileSize(file.fileSize)})</span>
+                <a href="${file.downloadURL}" target="_blank">Download</a>
+            `;
+
+            fileList.appendChild(fileItem);
+        });
+    }
+
+    // Utility function to format file size
+    function formatFileSize(size) {
+        const units = ["B", "KB", "MB", "GB"];
+        let unitIndex = 0;
+
+        while (size >= 1024 && unitIndex < units.length - 1) {
+            size /= 1024;
+            unitIndex++;
+        }
+
+        return `${size.toFixed(2)} ${units[unitIndex]}`;
+    }
+</script>
+</body>
+</html>
