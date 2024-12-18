@@ -9,6 +9,8 @@ public interface AttachmentService {
 
     void deleteAttachment(String fileId) throws Exception;
 
+    Attachment updateAttachment(String fileId, MultipartFile newFile) throws Exception;
+
     Attachment saveAttachment(MultipartFile file) throws Exception;
 
     Attachment getAttachment(String fileId) throws Exception;

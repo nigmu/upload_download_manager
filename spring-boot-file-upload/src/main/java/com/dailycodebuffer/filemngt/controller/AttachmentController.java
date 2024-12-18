@@ -34,25 +34,26 @@ public class AttachmentController {
 
 
 
-    @PostMapping("/upload")
-    public ResponseData uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
-        Attachment attachment = attachmentService.saveAttachment(file);
-        String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download/")
-                .path(String.valueOf(attachment.getId()))
-                .toUriString();
-
-        return new ResponseData(
-                attachment.getId(), // Add this
-                attachment.getFileName(),
-                downloadURL,
-                file.getContentType(),
-                file.getSize(),
-                attachment.getUploadDate(),
-                attachment.getUploadTime()
-        );
-
-    }
+//    @PostMapping("/upload")
+//    public ResponseData uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
+//        Attachment attachment = attachmentService.saveAttachment(file);
+//        String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path("/download/")
+//                .path(String.valueOf(attachment.getId()))
+//                .toUriString();
+//
+//        return new ResponseData(
+//                attachment.getId(), // Add this
+//                attachment.getFileName(),
+//                downloadURL,
+//                file.getContentType(),
+//                file.getSize(),
+//                attachment.getUploadDate(),
+//                attachment.getUploadTime(),
+//                attachment.getUploadDurationMillis()
+//        );
+//
+//    }
 
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) throws Exception {
@@ -81,7 +82,8 @@ public class AttachmentController {
                         attachment.getFileType(),
                         attachment.getData().length,
                         attachment.getUploadDate(),
-                        attachment.getUploadTime()
+                        attachment.getUploadTime(),
+                        attachment.getUploadDurationMillis()
                 ))
 
 
@@ -103,7 +105,8 @@ public class AttachmentController {
                         attachment.getFileType(),
                         attachment.getData().length,
                         attachment.getUploadDate(),
-                        attachment.getUploadTime()
+                        attachment.getUploadTime(),
+                        attachment.getUploadDurationMillis()
                 ))
 
 
@@ -126,7 +129,8 @@ public class AttachmentController {
                         attachment.getFileType(),
                         attachment.getData().length,
                         attachment.getUploadDate(),
-                        attachment.getUploadTime()
+                        attachment.getUploadTime(),
+                        attachment.getUploadDurationMillis()
                 ))
 
 
@@ -150,4 +154,31 @@ public class AttachmentController {
                 return false;
         }
     }
+
+    @PostMapping("/upload")
+    public ResponseData uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
+        long startTime = System.currentTimeMillis(); // Capture start time
+        Attachment attachment = attachmentService.saveAttachment(file);
+        long endTime = System.currentTimeMillis(); // Capture end time
+        long uploadDuration = endTime - startTime; // Calculate the duration
+
+        String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(String.valueOf(attachment.getId()))
+                .toUriString();
+
+        return new ResponseData(
+                attachment.getId(),
+                attachment.getFileName(),
+                downloadURL,
+                file.getContentType(),
+                file.getSize(),
+                attachment.getUploadDate(),
+                attachment.getUploadTime(),
+                uploadDuration // Return the upload duration
+        );
+    }
+
+
+
 }

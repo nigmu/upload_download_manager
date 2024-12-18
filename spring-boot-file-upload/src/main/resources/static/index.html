@@ -164,34 +164,68 @@
     }
 
     // Function to display files in the file list
-    function displayFiles(files) {
-        const fileList = document.getElementById("fileList");
-        fileList.innerHTML = "";
+function displayFiles(files) {
+    const fileList = document.getElementById("fileList");
+    fileList.innerHTML = "";
 
-        if (files.length === 0) {
-            fileList.innerHTML = "<p>No files found.</p>";
-            return;
-        }
-
-        files.forEach(file => {
-            const fileItem = document.createElement("div");
-            fileItem.className = "file-item";
-
-            fileItem.innerHTML = `
-                <span>${file.fileName} (${file.fileType}, ${formatFileSize(file.fileSize)})</span>
-                <a href="${file.downloadURL}" target="_blank">Download</a>
-            `;
-            // In the displayFiles function
-            // In the displayFiles function
-fileItem.innerHTML = `
-    <span>${file.fileName} (${file.fileType}, ${formatFileSize(file.fileSize)})</span>
-    <a href="${file.downloadURL}" target="_blank">Download</a>
-    <button onclick="deleteFile(${file.id})">Delete</button>
-`;
-
-            fileList.appendChild(fileItem);
-        });
+    if (files.length === 0) {
+        fileList.innerHTML = "<p>No files found.</p>";
+        return;
     }
+
+    files.forEach((file, index) => {
+    const fileItem = document.createElement("div");
+    fileItem.className = "file-item";
+
+    fileItem.innerHTML = `
+        <span>${index + 1}. ${file.fileName} (${file.fileType}, ${formatFileSize(file.fileSize)})</span>
+        <a href="${file.downloadURL}" target="_blank">Download</a>
+        <button onclick="deleteFile(${file.id})">Delete</button>
+        <input type="file" id="fileInput${file.id}" style="display:none" onchange="updateFile(${file.id})" />
+        <button onclick="document.getElementById('fileInput${file.id}').click()">Update</button>
+    `;
+
+    fileList.appendChild(fileItem);
+});
+
+}
+
+
+    //Update file
+async function updateFile(fileId) {
+    const fileInput = document.getElementById(`fileInput${fileId}`);
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select a file to update.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const response = await fetch(`${baseUrl}/update/${fileId}`, {
+            method: "PUT",
+            body: formData
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert(`File updated successfully: ${result.fileName}`);
+            showAllFiles(); // Refresh file list
+        } else {
+            alert("Error updating file.");
+        }
+    } catch (error) {
+        console.error("Error updating file:", error);
+        alert("Error updating file.");
+    }
+}
+
+
+
+
 
     // New function to delete a file
 async function deleteFile(fileId) {

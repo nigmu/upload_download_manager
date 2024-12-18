@@ -25,6 +25,8 @@ public class Attachment {
     private LocalDate uploadDate; // New column for date
     private LocalTime uploadTime; // New column for time
 
+    private long uploadDurationMillis;
+
     public Attachment(String fileName, String fileType, byte[] data) {
         this.fileName = fileName;
         this.fileType = fileType;

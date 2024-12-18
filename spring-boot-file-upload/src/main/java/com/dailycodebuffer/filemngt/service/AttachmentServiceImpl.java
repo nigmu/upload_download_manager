@@ -30,9 +30,30 @@ public class AttachmentServiceImpl implements AttachmentService {
         }
     }
 
+//    @Override
+//    public Attachment saveAttachment(MultipartFile file) throws Exception {
+//        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+//        try {
+//            if (fileName.startsWith("..") || fileName.endsWith("..")) {
+//                throw new Exception("Filename contains invalid path sequence: " + fileName);
+//            }
+//
+//            Attachment attachment = new Attachment(fileName, file.getContentType(), file.getBytes());
+//            attachment.setUploadDate(LocalDate.now()); // Set current date
+//            attachment.setUploadTime(LocalTime.now()); // Set current time
+//
+//            return attachmentRepository.save(attachment);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new Exception("Could not save File: " + fileName);
+//        }
+//    }
     @Override
     public Attachment saveAttachment(MultipartFile file) throws Exception {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        long startTime = System.currentTimeMillis(); // Capture start time
+
         try {
             if (fileName.startsWith("..") || fileName.endsWith("..")) {
                 throw new Exception("Filename contains invalid path sequence: " + fileName);
@@ -42,6 +63,9 @@ public class AttachmentServiceImpl implements AttachmentService {
             attachment.setUploadDate(LocalDate.now()); // Set current date
             attachment.setUploadTime(LocalTime.now()); // Set current time
 
+            long endTime = System.currentTimeMillis(); // Capture end time
+            attachment.setUploadDurationMillis(endTime - startTime); // Calculate the duration
+
             return attachmentRepository.save(attachment);
 
         } catch (Exception e) {
@@ -49,6 +73,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             throw new Exception("Could not save File: " + fileName);
         }
     }
+
 
     @Override
     public List<Attachment> searchFiles(String query) {
@@ -95,4 +120,28 @@ public class AttachmentServiceImpl implements AttachmentService {
                 return false;
         }
     }
+
+    @Override
+    public Attachment updateAttachment(String fileId, MultipartFile newFile) throws Exception {
+        // Fetch the existing file by ID
+        Attachment existingAttachment = getAttachment(fileId);
+
+        if (existingAttachment == null) {
+            throw new Exception("File not found with ID: " + fileId);
+        }
+
+        // Update fields with new file data
+        existingAttachment.setFileName(newFile.getOriginalFilename());
+        existingAttachment.setFileType(newFile.getContentType());
+        existingAttachment.setData(newFile.getBytes());
+        existingAttachment.setUploadDate(LocalDate.now());
+        existingAttachment.setUploadTime(LocalTime.now());
+
+        // Save updated attachment back to the database
+        return attachmentRepository.save(existingAttachment);
+    }
+
+
+
+
 }

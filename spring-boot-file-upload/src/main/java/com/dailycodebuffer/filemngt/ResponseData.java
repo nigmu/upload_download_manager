@@ -18,4 +18,5 @@ public class ResponseData {
     private long fileSize;
     private LocalDate uploadDate; // New field
     private LocalTime uploadTime; // New field
+    private long uploadDurationMillis;
 }
