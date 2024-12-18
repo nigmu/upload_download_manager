@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,9 @@ public class AttachmentServiceImpl implements AttachmentService {
             }
 
             Attachment attachment = new Attachment(fileName, file.getContentType(), file.getBytes());
+            attachment.setUploadDate(LocalDate.now()); // Set current date
+            attachment.setUploadTime(LocalTime.now()); // Set current time
+
             return attachmentRepository.save(attachment);
 
         } catch (Exception e) {

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,10 +32,14 @@ public class AttachmentController {
                 .path(String.valueOf(attachment.getId()))
                 .toUriString();
 
-        return new ResponseData(attachment.getFileName(),
+        return new ResponseData(
+                attachment.getFileName(),
                 downloadURL,
                 file.getContentType(),
-                file.getSize());
+                file.getSize(),
+                attachment.getUploadDate(),
+                attachment.getUploadTime()
+        );
     }
 
     @GetMapping("/download/{fileId}")
@@ -58,7 +63,11 @@ public class AttachmentController {
                                 .path(String.valueOf(attachment.getId()))
                                 .toUriString(),
                         attachment.getFileType(),
-                        attachment.getData().length))
+                        attachment.getData().length,
+                        attachment.getUploadDate(),  // Add uploadDate
+                        attachment.getUploadTime()   // Add uploadTime
+                ))
+
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +83,11 @@ public class AttachmentController {
                                 .path(String.valueOf(attachment.getId()))
                                 .toUriString(),
                         attachment.getFileType(),
-                        attachment.getData().length))
+                        attachment.getData().length,
+                        attachment.getUploadDate(),  // Add uploadDate
+                        attachment.getUploadTime()   // Add uploadTime
+                ))
+
                 .collect(Collectors.toList());
     }
 
@@ -91,7 +104,11 @@ public class AttachmentController {
                                 .path(String.valueOf(attachment.getId()))
                                 .toUriString(),
                         attachment.getFileType(),
-                        attachment.getData().length))
+                        attachment.getData().length,
+                        attachment.getUploadDate(),  // Add uploadDate
+                        attachment.getUploadTime()   // Add uploadTime
+                ))
+
                 .collect(Collectors.toList());
     }
 

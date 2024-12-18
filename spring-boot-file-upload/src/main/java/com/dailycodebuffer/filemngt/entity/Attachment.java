@@ -4,24 +4,26 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-
-// id , filename , filetype , data(byte form)
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
-@Data // lombok annotation -> for getters , setters methods
+@Data
 @NoArgsConstructor
 public class Attachment {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-        private String fileName;
-        private String fileType;
+    private String fileName;
+    private String fileType;
 
-        @Lob // large object (LOB) in the database.
-        @Column(name = "data", columnDefinition = "LONGBLOB")
-        private byte[] data;
+    @Lob
+    @Column(name = "data", columnDefinition = "LONGBLOB")
+    private byte[] data;
 
+    private LocalDate uploadDate; // New column for date
+    private LocalTime uploadTime; // New column for time
 
     public Attachment(String fileName, String fileType, byte[] data) {
         this.fileName = fileName;
