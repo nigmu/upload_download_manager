@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseData {
+    private Long id;
     private String fileName;
     private String downloadURL;
     private String fileType;

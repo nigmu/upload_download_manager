@@ -24,6 +24,16 @@ public class AttachmentController {
         this.attachmentService = attachmentService;
     }
 
+
+    // New Method: Delete file by Id
+    @DeleteMapping("/delete/{fileId}")
+    public ResponseEntity<String> deleteFile(@PathVariable String fileId) throws Exception {
+        attachmentService.deleteAttachment(fileId);
+        return ResponseEntity.ok("File deleted successfully");
+    }
+
+
+
     @PostMapping("/upload")
     public ResponseData uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
         Attachment attachment = attachmentService.saveAttachment(file);
@@ -33,6 +43,7 @@ public class AttachmentController {
                 .toUriString();
 
         return new ResponseData(
+                attachment.getId(), // Add this
                 attachment.getFileName(),
                 downloadURL,
                 file.getContentType(),
@@ -40,10 +51,14 @@ public class AttachmentController {
                 attachment.getUploadDate(),
                 attachment.getUploadTime()
         );
+
     }
 
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) throws Exception {
+        if (fileId == null || fileId.isEmpty()) {
+            throw new Exception("File ID is required");
+        }
         Attachment attachment = attachmentService.getAttachment(fileId);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(attachment.getFileType()))
@@ -57,6 +72,7 @@ public class AttachmentController {
         return attachmentService.searchFiles(query)
                 .stream()
                 .map(attachment -> new ResponseData(
+                        attachment.getId(), // Add this
                         attachment.getFileName(),
                         ServletUriComponentsBuilder.fromCurrentContextPath()
                                 .path("/download/")
@@ -64,9 +80,10 @@ public class AttachmentController {
                                 .toUriString(),
                         attachment.getFileType(),
                         attachment.getData().length,
-                        attachment.getUploadDate(),  // Add uploadDate
-                        attachment.getUploadTime()   // Add uploadTime
+                        attachment.getUploadDate(),
+                        attachment.getUploadTime()
                 ))
+
 
                 .collect(Collectors.toList());
     }
@@ -77,6 +94,7 @@ public class AttachmentController {
         return attachmentService.getAllFiles()
                 .stream()
                 .map(attachment -> new ResponseData(
+                        attachment.getId(), // Add this
                         attachment.getFileName(),
                         ServletUriComponentsBuilder.fromCurrentContextPath()
                                 .path("/download/")
@@ -84,9 +102,10 @@ public class AttachmentController {
                                 .toUriString(),
                         attachment.getFileType(),
                         attachment.getData().length,
-                        attachment.getUploadDate(),  // Add uploadDate
-                        attachment.getUploadTime()   // Add uploadTime
+                        attachment.getUploadDate(),
+                        attachment.getUploadTime()
                 ))
+
 
                 .collect(Collectors.toList());
     }
@@ -98,6 +117,7 @@ public class AttachmentController {
                 .stream()
                 .filter(attachment -> matchFileType(type, attachment.getFileType()))
                 .map(attachment -> new ResponseData(
+                        attachment.getId(), // Add this
                         attachment.getFileName(),
                         ServletUriComponentsBuilder.fromCurrentContextPath()
                                 .path("/download/")
@@ -105,9 +125,10 @@ public class AttachmentController {
                                 .toUriString(),
                         attachment.getFileType(),
                         attachment.getData().length,
-                        attachment.getUploadDate(),  // Add uploadDate
-                        attachment.getUploadTime()   // Add uploadTime
+                        attachment.getUploadDate(),
+                        attachment.getUploadTime()
                 ))
+
 
                 .collect(Collectors.toList());
     }

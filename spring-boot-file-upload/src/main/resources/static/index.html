@@ -181,10 +181,39 @@
                 <span>${file.fileName} (${file.fileType}, ${formatFileSize(file.fileSize)})</span>
                 <a href="${file.downloadURL}" target="_blank">Download</a>
             `;
+            // In the displayFiles function
+            // In the displayFiles function
+fileItem.innerHTML = `
+    <span>${file.fileName} (${file.fileType}, ${formatFileSize(file.fileSize)})</span>
+    <a href="${file.downloadURL}" target="_blank">Download</a>
+    <button onclick="deleteFile(${file.id})">Delete</button>
+`;
 
             fileList.appendChild(fileItem);
         });
     }
+
+    // New function to delete a file
+async function deleteFile(fileId) {
+    if (fileId === undefined) {
+        alert("Error: File ID is undefined");
+        return;
+    }
+    try {
+        const response = await fetch(`${baseUrl}/delete/${fileId}`, {
+            method: "DELETE"
+        });
+        if (response.ok) {
+            alert("File deleted successfully");
+            showAllFiles(); // Refresh file list
+        } else {
+            alert("Error deleting file");
+        }
+    } catch (error) {
+        console.error("Error deleting file:", error);
+        alert("Error deleting file");
+    }
+}
 
     // Utility function to format file size
     function formatFileSize(size) {

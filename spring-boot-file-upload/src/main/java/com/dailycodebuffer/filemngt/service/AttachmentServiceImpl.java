@@ -20,6 +20,16 @@ public class AttachmentServiceImpl implements AttachmentService {
         this.attachmentRepository = attachmentRepository;
     }
 
+    // New Method: Delete attachment by Id
+    @Override
+    public void deleteAttachment(String fileId) throws Exception {
+        try {
+            attachmentRepository.deleteById(Long.valueOf(fileId));
+        } catch (Exception e) {
+            throw new Exception("Could not delete File with Id: " + fileId);
+        }
+    }
+
     @Override
     public Attachment saveAttachment(MultipartFile file) throws Exception {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
