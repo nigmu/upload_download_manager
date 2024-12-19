@@ -15,24 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
-import com.dailycodebuffer.filemngt.ResponseData;
-import com.dailycodebuffer.filemngt.entity.Attachment;
-import com.dailycodebuffer.filemngt.service.AttachmentService;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.stream.Collectors;
-
-
 @RestController
 public class AttachmentController {
 
