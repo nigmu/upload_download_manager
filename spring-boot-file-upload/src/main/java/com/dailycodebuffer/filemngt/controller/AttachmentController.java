@@ -179,6 +179,26 @@ public class AttachmentController {
         );
     }
 
+    @PutMapping("/update/{fileId}")
+    public ResponseData updateFile(@PathVariable String fileId, @RequestParam("file") MultipartFile newFile) throws Exception {
+        Attachment updatedAttachment = attachmentService.updateAttachment(fileId, newFile);
+        String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(String.valueOf(updatedAttachment.getId()))
+                .toUriString();
+
+        return new ResponseData(
+                updatedAttachment.getId(),
+                updatedAttachment.getFileName(),
+                downloadURL,
+                newFile.getContentType(),
+                newFile.getSize(),
+                updatedAttachment.getUploadDate(),
+                updatedAttachment.getUploadTime(),
+                updatedAttachment.getUploadDurationMillis()
+        );
+    }
+
 
 
 }
