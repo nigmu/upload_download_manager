@@ -88,6 +88,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>-Xms512m -Xmx2g</jvmArguments>
+                </configuration>
             </plugin>
 
             <!-- Maven Compiler Plugin -->
