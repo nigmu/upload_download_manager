@@ -40,6 +40,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             }
 
             Attachment attachment = new Attachment(fileName, file.getContentType(), file.getBytes());
+            attachment.setFileSize(file.getSize()); // Set file size
             attachment.setUploadDate(LocalDate.now()); // Set current date
             attachment.setUploadTime(LocalTime.now()); // Set current time
 

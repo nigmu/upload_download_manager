@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 
 @RestController
 public class AttachmentController {
@@ -174,6 +175,24 @@ public class AttachmentController {
                 updatedAttachment.getUploadTime(),
                 updatedAttachment.getUploadDurationMillis()
         );
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResponseData>> getAllFiles() {
+        List<Attachment> attachments = attachmentService.getAllFiles();
+        List<ResponseData> responseData = attachments.stream()
+                .map(attachment -> new ResponseData(
+                        attachment.getId(),
+                        attachment.getFileName(),
+                        null, // download URL
+                        attachment.getFileType(),
+                        attachment.getFileSize(),
+                        attachment.getUploadDate(),
+                        attachment.getUploadTime(),
+                        attachment.getUploadDurationMillis()
+                ))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(responseData, HttpStatus.OK);
     }
 
 

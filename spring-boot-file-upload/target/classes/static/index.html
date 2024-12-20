@@ -459,6 +459,8 @@
             </div>
             <div id="fileList"></div>
         </div>
+
+
     </div>
 </div>
 
@@ -466,16 +468,16 @@
     const baseUrl = window.location.origin;
 
     function showUpload() {
-    document.getElementById('uploadSection').style.display = 'block'; // Show the upload section
-    document.getElementById('fileSection').style.display = 'none'; // Hide the file list section
+    document.getElementById('uploadSection').style.display = 'block';
+    document.getElementById('fileSection').style.display = 'none';
     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.nav-button')[0].classList.add('active');
 }
 
 
     function showFiles() {
-    document.getElementById('uploadSection').style.display = 'none'; // Hide the upload section
-    document.getElementById('fileSection').style.display = 'block'; // Show the file list section
+    document.getElementById('uploadSection').style.display = 'none';
+    document.getElementById('fileSection').style.display = 'block';
     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.nav-button')[1].classList.add('active');
     showAllFiles(); // Load and display the files
@@ -571,53 +573,42 @@
         if (files) displayFiles(files);
     };
 
-    const showAllFiles = async () => {
-        const files = await fetchApi("/files");
-        if (files) displayFiles(files);
-    };
+const showAllFiles = async () => {
+    const files = await fetchApi("/files");
+    if (files) displayFiles(files);
+};
 
-    function displayFiles(files) {
-        const fileList = document.getElementById("fileList");
-        fileList.innerHTML = files.length
-            ? files.map((file, index) => `
-                <div class="file-item" id="file-${file.id}">
-                    <i class="fas fa-file"></i>
-                    <div class="file-info">
-                        <div>${file.fileName}</div>
-                        <small>${formatFileSize(file.fileSize)}</small>
-                    </div>
-                    <div class="file-actions">
-                        <button class="action-button download-btn" onclick="window.open('${file.downloadURL}')">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button class="action-button update-btn" onclick="document.getElementById('fileInput${file.id}').click()">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-button delete-btn" onclick="deleteFile(${file.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <input type="file" id="fileInput${file.id}" style="display:none" onchange="updateFile(${file.id})">
-                    </div>
+
+<!--This here displays the file properties-->
+function displayFiles(files) {
+    const fileList = document.getElementById("fileList");
+    fileList.innerHTML = files.length
+        ? files.map((file, index) => `
+            <div class="file-item" id="file-${file.id}">
+                <i class="fas fa-file"></i>
+                <div class="file-info">
+                    <div>${file.fileName}</div>
+                    <small>Uploaded on: ${file.uploadDate} at ${file.uploadTime} (${formatFileSize(file.fileSize)})</small>
+                    <small>Upload duration: ${file.uploadDurationMillis} ms</small>
                 </div>
-            `).join("")
-            : '<p class="no-files">No files found.</p>';
-    }
+                <div class="file-actions">
+                    <button class="action-button download-btn" onclick="window.open('${baseUrl}/download/${file.id}')">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="action-button update-btn" onclick="document.getElementById('fileInput${file.id}').click()">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-button delete-btn" onclick="deleteFile(${file.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <input type="file" id="fileInput${file.id}" style="display:none" onchange="updateFile(${file.id})">
+                </div>
+            </div>
+        `).join("")
+        : '<p class="no-files">No files found.</p>';
+}
 
-<!--    const deleteFile = async (fileId) => {-->
-<!--        if (!fileId) {-->
-<!--            displayMessage("Invalid file ID.", "error");-->
-<!--            return;-->
-<!--        }-->
 
-<!--        const result = await fetchApi(`/delete/${fileId}`, { method: "DELETE" });-->
-<!--        if (result) {-->
-<!--            displayMessage("File deleted successfully.");-->
-<!--            const fileElement = document.getElementById(`file-${fileId}`);-->
-<!--            if (fileElement) {-->
-<!--                fileElement.remove();-->
-<!--            }-->
-<!--        }-->
-<!--    };-->
 const deleteFile = async (fileId) => {
     if (!fileId) {
         displayMessage("Invalid file ID.", "error");
