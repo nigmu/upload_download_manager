@@ -587,9 +587,10 @@ function displayFiles(files) {
             <div class="file-item" id="file-${file.id}">
                 <i class="fas fa-file"></i>
                 <div class="file-info">
-                    <div>${file.fileName}</div>
-                    <small>Uploaded on: ${file.uploadDate} at ${file.uploadTime} (${formatFileSize(file.fileSize)})</small>
-                    <small>Upload duration: ${file.uploadDurationMillis} ms</small>
+                    <h4>${file.fileName}</h4>
+                    <p>File Size: ${formatFileSize(file.fileSize)}</p>
+                    <p>Uploaded on: ${file.uploadDate} at ${file.uploadTime}</p>
+                    <p>Upload Duration: ${file.uploadDurationMillis} ms</p>
                 </div>
                 <div class="file-actions">
                     <button class="action-button download-btn" onclick="window.open('${baseUrl}/download/${file.id}')">
