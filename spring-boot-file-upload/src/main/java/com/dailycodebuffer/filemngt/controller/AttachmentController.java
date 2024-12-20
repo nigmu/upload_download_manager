@@ -32,29 +32,6 @@ public class AttachmentController {
         return ResponseEntity.ok("File deleted successfully");
     }
 
-
-
-//    @PostMapping("/upload")
-//    public ResponseData uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
-//        Attachment attachment = attachmentService.saveAttachment(file);
-//        String downloadURL = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path("/download/")
-//                .path(String.valueOf(attachment.getId()))
-//                .toUriString();
-//
-//        return new ResponseData(
-//                attachment.getId(), // Add this
-//                attachment.getFileName(),
-//                downloadURL,
-//                file.getContentType(),
-//                file.getSize(),
-//                attachment.getUploadDate(),
-//                attachment.getUploadTime(),
-//                attachment.getUploadDurationMillis()
-//        );
-//
-//    }
-
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileId) throws Exception {
         if (fileId == null || fileId.isEmpty()) {

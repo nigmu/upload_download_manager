@@ -29,26 +29,6 @@ public class AttachmentServiceImpl implements AttachmentService {
             throw new Exception("Could not delete File with Id: " + fileId);
         }
     }
-
-//    @Override
-//    public Attachment saveAttachment(MultipartFile file) throws Exception {
-//        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-//        try {
-//            if (fileName.startsWith("..") || fileName.endsWith("..")) {
-//                throw new Exception("Filename contains invalid path sequence: " + fileName);
-//            }
-//
-//            Attachment attachment = new Attachment(fileName, file.getContentType(), file.getBytes());
-//            attachment.setUploadDate(LocalDate.now()); // Set current date
-//            attachment.setUploadTime(LocalTime.now()); // Set current time
-//
-//            return attachmentRepository.save(attachment);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new Exception("Could not save File: " + fileName);
-//        }
-//    }
     @Override
     public Attachment saveAttachment(MultipartFile file) throws Exception {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
